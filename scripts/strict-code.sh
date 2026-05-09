@@ -17,6 +17,7 @@ if grep -rEn '\b(TODO|FIXME)\b' \
     --include='*.sh' \
     --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage \
     --exclude-dir=.git \
+    --exclude='strict-code.sh' \
     . | grep -vE '\(#[0-9]+\)' | grep -q '.'; then
   echo "--- offending lines: ---" >&2
   grep -rEn '\b(TODO|FIXME)\b' \
@@ -25,6 +26,7 @@ if grep -rEn '\b(TODO|FIXME)\b' \
     --include='*.sh' \
     --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage \
     --exclude-dir=.git \
+    --exclude='strict-code.sh' \
     . | grep -vE '\(#[0-9]+\)' >&2 || true
   fail "bare TODO/FIXME — add (#NN) issue link"
 fi
@@ -44,6 +46,7 @@ if grep -rEn '\bas any\b|: any\b' \
     --include='*.ts' --include='*.svelte' \
     --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage \
     --exclude-dir=.git \
+    --exclude='strict-code.sh' \
     . ; then
   fail "any type escape hatch — narrow the type instead"
 fi
