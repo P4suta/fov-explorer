@@ -64,6 +64,22 @@ just ci              # 上記をまとめて実行
 `main` への push で `pages.yml` が自動デプロイ。GitHub Pages 設定は
 `Settings → Pages → Source: GitHub Actions`。
 
+## Signed commits — enforced
+
+このリポジトリは **client + server** 両側で署名コミットを強制している:
+
+- **Server (GitHub repository ruleset)**: `Require signed commits` を default
+  branch に適用。未署名 push は HTTP 422 で reject される。`bypass_actors`
+  は空、admin も bypass 不可
+- **Client (chezmoi-managed git template)**: `~/.config/git/template/hooks/post-commit`
+  が `git verify-commit HEAD` で署名を検証し、未署名なら
+  `git commit --amend --no-edit --gpg-sign` で自動再署名。
+  `-c commit.gpgsign=false` / `--no-gpg-sign` / repo-local override
+  すべてのバイパス経路をカバー
+
+> 防御層が違う: client side は便利な silent re-sign、server side は
+> 「絶対通さない」最終ゲート。
+
 ## License
 
 MIT OR Apache-2.0(`LICENSE-MIT` / `LICENSE-APACHE`)
