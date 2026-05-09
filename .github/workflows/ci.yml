@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Lint (Biome — strict)
+        run: bun run lint
+
+      - name: Typecheck (svelte-check + tsc, fail on warnings)
+        run: bun run typecheck
+
+      - name: Strict-code grep gate
+        run: bash scripts/strict-code.sh
+
+      - name: Tests + C1 100% coverage gate
+        run: bun run test:coverage
+
+      - name: Production build
+        run: bun run build
+        env:
+          VITE_BASE: /fov-explorer/
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-report
+          path: coverage
+          retention-days: 7

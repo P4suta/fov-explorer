@@ -1,0 +1,29 @@
+# Single-service compose file. The host never runs bun directly — every
+# `just` recipe shells through `docker compose run --rm app …`.
+
+services:
+  app:
+    build:
+      context: .
+    image: fov-explorer:dev
+    # Run as host UID/GID so files written through the bind mount land
+    # owned by the developer, not root.
+    user: "1000:1000"
+    working_dir: /app
+    volumes:
+      # Source bind mount, plus named volumes that shadow the bind for
+      # node_modules / cache so the container's deps don't leak to host.
+      - .:/app
+      - node_modules:/app/node_modules
+      - bun-cache:/bun-cache
+    ports:
+      - "5173:5173"
+      - "4173:4173"
+    # tty/stdin for interactive shell + watcher-friendly output.
+    tty: true
+    stdin_open: true
+    init: true
+
+volumes:
+  node_modules:
+  bun-cache:

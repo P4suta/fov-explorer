@@ -1,0 +1,3 @@
+# Local toolchain — host runs `just` only; everything else lives in Docker.
+[tools]
+just = "latest"
