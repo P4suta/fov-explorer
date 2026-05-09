@@ -10,12 +10,16 @@ services:
     # owned by the developer, not root.
     user: "1000:1000"
     working_dir: /app
+    environment:
+      # Bun needs a writable HOME; the default container HOME (/) is read-only
+      # for non-root. /tmp is always writable.
+      HOME: /tmp
+      BUN_INSTALL_CACHE_DIR: /tmp/bun-cache
     volumes:
-      # Source bind mount, plus named volumes that shadow the bind for
-      # node_modules / cache so the container's deps don't leak to host.
+      # Source bind mount, plus a named volume that shadows the bind for
+      # node_modules so the container's deps don't leak to host.
       - .:/app
       - node_modules:/app/node_modules
-      - bun-cache:/bun-cache
     ports:
       - "5173:5173"
       - "4173:4173"
@@ -26,4 +30,3 @@ services:
 
 volumes:
   node_modules:
-  bun-cache:

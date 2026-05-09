@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { cropFactor } from '../src/lib/optics.ts';
-import { SENSOR_FORMATS, findFormat } from '../src/lib/sensors.ts';
+import { findFormat, SENSOR_FORMATS } from '../src/lib/sensors.ts';
 
 describe('SENSOR_FORMATS catalog', () => {
   it('has a unique id for every entry', () => {

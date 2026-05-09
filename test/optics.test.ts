@@ -1,11 +1,11 @@
 import * as fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import {
-  FULL_FRAME_DIAGONAL_MM,
   angleOfView,
   cropFactor,
   diagonal,
   equivalentFocal,
+  FULL_FRAME_DIAGONAL_MM,
   fieldOfView,
   heightAtDistance,
   widthAtDistance,
